@@ -1,0 +1,28 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="end">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title slot="primary">
+      Tienda
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <div class="ion-padding">
+    <ion-list>
+      <ion-item *ngFor="let game of games" (click)="gameTapped(game)">
+        <ion-thumbnail slot="start">
+          <img src="{{game.cover}}">
+        </ion-thumbnail>
+        <ion-label> {{game.name}}</ion-label>
+      </ion-item>
+    </ion-list>
+  </div>
+</ion-content>
+<ion-toolbar>
+  <img src="./../assets/4Vientos_iconoBlanco.png"/>
+  <ion-title slot="primary">
+    Desarrollo de Interfaces
+  </ion-title>
+</ion-toolbar>
