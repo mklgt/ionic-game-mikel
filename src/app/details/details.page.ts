@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GamedbService } from '../core/gamedbservice.service';
+import { GamecrudService } from '../core/gamecrud.service';
 import { IGame } from '../share/interfaces';
 import { ToastController } from '@ionic/angular';
 
@@ -15,14 +15,33 @@ export class DetailsPage implements OnInit {
   constructor(
     private activatedrouter: ActivatedRoute,
     private router: Router,
-    private gamedbService: GamedbService,
+    private gamecrudService: GamecrudService,
     public toastController: ToastController
   ) { }
   ngOnInit() {
     this.id = this.activatedrouter.snapshot.params.id;
-    this.gamedbService.getItem(this.id).then(
-      (data: IGame) => this.game = data
-    );
+    this.gamecrudService.read_Games().subscribe(data => {
+      let games = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          isEdit: false,
+          name: e.payload.doc.data()['name'],
+          genre: e.payload.doc.data()['genre'],
+          cover: e.payload.doc.data()['cover'],
+          description: e.payload.doc.data()['description'],
+          releaseyear: e.payload.doc.data()['releaseyear'],
+          price: e.payload.doc.data()['price']
+        };
+      })
+      // tengo todos los móviles
+      games.forEach(element => {
+        if(element.id == this.id){
+            this.game = element;
+        }
+      });
+
+      console.log(this.game);
+    });
   }
 
   editRecord(game) {
@@ -38,7 +57,7 @@ export class DetailsPage implements OnInit {
           icon: 'delete',
           text: 'ACEPTAR',
           handler: () => {
-            this.gamedbService.remove(id);
+            this.gamecrudService.delete_Game(id);
             this.router.navigate(['home']);
           }
         }, {

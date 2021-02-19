@@ -3,8 +3,17 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
-};
+  production: false,
+  firebase: {
+    apiKey: "AIzaSyAts_xos4XJL5Cn7MOH3X6BHQPmRcwHG-U",
+    authDomain: "ionic-game-mikel.firebaseapp.com",
+    databaseURL: "https://ionic-game-mikel-default-rtdb.firebaseio.com",
+    projectId: "ionic-game-mikel",
+    storageBucket: "ionic-game-mikel.appspot.com",
+    messagingSenderId: "549143580514",
+    appId: "1:549143580514:web:bea2c23271cb05091be63b"
+  }
+  };
 
 /*
  * For easier debugging in development mode, you can import the following file

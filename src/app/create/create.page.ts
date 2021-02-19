@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl } from '@angular/forms';
-import { ReactiveFormsModule} from '@angular/forms';
-import { GamedbService } from '../core/gamedbservice.service';
+import { ReactiveFormsModule } from '@angular/forms';
+import { GamecrudService } from '../core/gamecrud.service';
 import { Router } from '@angular/router';
 import { ToastController } from '@ionic/angular';
 import { IGame } from '../share/interfaces';
@@ -16,7 +16,7 @@ export class CreatePage implements OnInit {
   gameForm: FormGroup;
   constructor(
     private router: Router,
-    private gamedbService: GamedbService,
+    private gamecrudService: GamecrudService,
     public toastController: ToastController
   ) { }
   ngOnInit() {
@@ -55,9 +55,7 @@ export class CreatePage implements OnInit {
   }
   saveGame() {
     this.game = this.gameForm.value;
-    let nextKey = this.game.name.trim();
-    this.game.id = nextKey;
-    this.gamedbService.setItem(nextKey, this.game);
+    this.gamecrudService.create_Game(this.game);
     console.warn(this.gameForm.value);
   }
 }

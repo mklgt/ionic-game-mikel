@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { GamedbService } from '../core/gamedbservice.service';
+import { GamecrudService } from '../core/gamecrud.service';
 import { FormGroup, FormControl } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { IGame } from '../share/interfaces';
@@ -19,15 +19,13 @@ export class EditPage implements OnInit {
   constructor(
     private activatedrouter: ActivatedRoute,
     private router: Router,
-    private gamedbService: GamedbService,
+    private gamecrudService: GamecrudService,
     public toastController: ToastController
   ) { }
 
   ngOnInit() {
     this.id = this.activatedrouter.snapshot.params.id;
-    this.gamedbService.getItem(this.id).then(
-      (data: IGame) => this.game = data
-    );
+    
     this.gameForm = new FormGroup({
       name: new FormControl(''),
       genre: new FormControl(''),
@@ -35,6 +33,33 @@ export class EditPage implements OnInit {
       cover: new FormControl(''),
       description: new FormControl(''),
       price: new FormControl(''),
+    });
+    this.gamecrudService.read_Games().subscribe(data => {
+      let games = data.map(e => {
+        return {
+          id: e.payload.doc.id,
+          isEdit: false,
+          name: e.payload.doc.data()['name'],
+          genre: e.payload.doc.data()['genre'],
+          cover: e.payload.doc.data()['cover'],
+          description: e.payload.doc.data()['description'],
+          releaseyear: e.payload.doc.data()['releaseyear'],
+          price: e.payload.doc.data()['price']
+        };
+      })
+      // tengo todos los móviles
+      games.forEach(element => {
+        if(element.id == this.id){
+            this.game = element;
+            this.gameForm.get('name').setValue(this.game.name),
+            this.gameForm.get('genre').setValue(this.game.genre),
+            this.gameForm.get('cover').setValue(this.game.cover),
+            this.gameForm.get('description').setValue(this.game.description),
+            this.gameForm.get('releaseyear').setValue(this.game.releaseyear),
+            this.gameForm.get('price').setValue(this.game.price)
+        }
+      });
+      console.log(this.game);
     });
   }
   async onSubmit() {
@@ -47,7 +72,8 @@ export class EditPage implements OnInit {
           icon: 'save',
           text: 'ACEPTAR',
           handler: () => {
-            this.saveGame();
+            this.game=this.gameForm.value;
+            this.gamecrudService.update_Game(this.id,this.game);
             this.router.navigate(['home']);
           }
         }, {
@@ -61,10 +87,6 @@ export class EditPage implements OnInit {
     });
     toast.present();
   }
-  saveGame() {
-    
-    this.gamedbService.setItem(this.game.id, this.game);
-    console.warn(this.game);
-  }
+ 
 
 }
